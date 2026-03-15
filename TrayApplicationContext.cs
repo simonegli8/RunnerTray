@@ -42,6 +42,8 @@ namespace RunnerTray
 
             // Automatically start the configured command when the application starts
             StartCommand();
+
+            UpdateMenuItems();
         }
 
         private bool IsRunning => _process != null && !_process.HasExited;
@@ -51,6 +53,7 @@ namespace RunnerTray
             if (IsRunning)
             {
                 ShowBalloon("Process is already running.");
+                UpdateMenuItems();
                 return;
             }
 
@@ -68,10 +71,15 @@ namespace RunnerTray
                 };
 
                 _process = new Process { StartInfo = psi, EnableRaisingEvents = true };
-                _process.Exited += (s, e) => ShowBalloon("Process exited.");
+                _process.Exited += (s, e) =>
+                {
+                    ShowBalloon("Process exited.");
+                    UpdateMenuItems();
+                };
 
                 _process.Start();
                 ShowBalloon("Started: " + command);
+                UpdateMenuItems();
             }
             catch (Exception ex)
             {
@@ -85,6 +93,7 @@ namespace RunnerTray
             if (!IsRunning)
             {
                 ShowBalloon("Process is not running.");
+                UpdateMenuItems();
                 return;
             }
 
@@ -92,7 +101,6 @@ namespace RunnerTray
             {
                 _process.Kill();
                 _process.WaitForExit(2000);
-                ShowBalloon("Process stopped.");
             }
             catch (Exception ex)
             {
@@ -102,6 +110,7 @@ namespace RunnerTray
             {
                 _process.Dispose();
                 _process = null;
+                UpdateMenuItems();
             }
         }
 
@@ -150,6 +159,13 @@ namespace RunnerTray
             _trayIcon.BalloonTipTitle = "RunnerTray";
             _trayIcon.BalloonTipText = message;
             _trayIcon.ShowBalloonTip(3000);
+        }
+
+        private void UpdateMenuItems()
+        {
+            var running = IsRunning;
+            _startItem.Enabled = !running;
+            _stopItem.Enabled = running;
         }
 
         private static Icon LoadTrayIcon()
