@@ -17,8 +17,9 @@
 		<!-- Upgrade handling -->
 		<MajorUpgrade DowngradeErrorMessage="A newer version of RunnerTray is already installed." />
 
-		<!-- Media template -->
-		<MediaTemplate />
+		<!-- Media template: embed cabinet inside MSI so it's a single file.
+		     Use 8.3-compliant name with {0} placeholder as required by WiX. -->
+		<MediaTemplate CabinetTemplate="RT{0}.cab" EmbedCab="yes" />
 
 		<!-- Directory structure (WiX v4 StandardDirectory usage) -->
 		<StandardDirectory Id="LocalAppDataFolder">
