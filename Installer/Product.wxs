@@ -7,7 +7,12 @@
 		Manufacturer="Estrellas de Esperanza"
 		UpgradeCode="5E7C7F55-4D4C-4A4D-9D5F-1234567890AB"
 		InstallerVersion="500"
-		Compressed="yes">
+		Compressed="yes"
+		Scope="perUser">
+
+		<!-- Installer icon -->
+		<Icon Id="RunnerTrayIcon" SourceFile="$(var.ProjectDir)..\github-play.ico" />
+		<Property Id="ARPPRODUCTICON" Value="RunnerTrayIcon" />
 
 		<!-- Upgrade handling -->
 		<MajorUpgrade DowngradeErrorMessage="A newer version of RunnerTray is already installed." />
@@ -15,15 +20,13 @@
 		<!-- Media template -->
 		<MediaTemplate />
 
-		<!-- Directory structure -->
-		<Directory Id="TARGETDIR" Name="SourceDir">
-			<Directory Id="LocalAppDataFolder">
-				<Directory Id="INSTALLFOLDER" Name="RunnerTray" />
-			</Directory>
-			<Directory Id="ProgramMenuFolder">
-				<Directory Id="StartupFolder" Name="Startup" />
-			</Directory>
-		</Directory>
+		<!-- Directory structure (WiX v4 StandardDirectory usage) -->
+		<StandardDirectory Id="LocalAppDataFolder">
+			<Directory Id="INSTALLFOLDER" Name="RunnerTray" />
+		</StandardDirectory>
+
+		<!-- Per-user Startup folder -->
+		<StandardDirectory Id="StartupFolder" />
 
 		<!-- Features -->
 		<Feature Id="MainFeature" Title="RunnerTray" Level="1">
@@ -31,23 +34,27 @@
 		</Feature>
 
 		<!-- Components -->
+		<!-- Main application files (per-user location, so use HKCU registry as key path to satisfy ICE38) -->
 		<DirectoryRef Id="INSTALLFOLDER">
 			<Component Id="RunnerTrayComponent" Guid="8F41D5D2-8E7F-4C2E-A1D2-1234567890AB">
 				<File Id="RunnerTrayExe"
 					  Source="$(var.ProjectDir)..\bin\$(Configuration)\net48\RunnerTray.exe"
-					  KeyPath="no">
-					<!-- Shortcut for Startup -->
-					<Shortcut
-						Id="RunnerTrayStartupShortcut"
-						Name="RunnerTray"
-						Description="Starts RunnerTray at logon"
-						Directory="StartupFolder"
-						WorkingDirectory="INSTALLFOLDER" />
-				</File>
+					  KeyPath="no" />
+
+				<!-- Non-advertised per-user Startup shortcut -->
+				<Shortcut
+					Id="RunnerTrayStartupShortcut"
+					Name="RunnerTray"
+					Description="Starts RunnerTray at logon"
+					Directory="StartupFolder"
+					Target="[INSTALLFOLDER]RunnerTray.exe"
+					WorkingDirectory="INSTALLFOLDER" />
+
+				<!-- HKCU registry key is the component key path -->
 				<RegistryValue
 					Root="HKCU"
 					Key="Software\RunnerTray"
-					Name="Installed"
+					Name="MainInstall"
 					Type="integer"
 					Value="1"
 					KeyPath="yes" />
