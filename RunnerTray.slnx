@@ -1,0 +1,9 @@
+
+<Solution xmlns="https://schemas.devlooped.net/2021/slnx">
+  <Project Path="RunnerTray.csproj" />
+  <Project Path="Installer\RunnerTray.Setup.wixproj">
+    <Platform Project="Win32" xmlns="" />
+    <Build xmlns="" />
+  </Project>
+</Solution>
+

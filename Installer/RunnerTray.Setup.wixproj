@@ -1,0 +1,22 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project Sdk="WixToolset.Sdk/4.0.5" ToolsVersion="4.0">
+	<PropertyGroup>
+		<OutputType>Package</OutputType>
+		<TargetFramework>net48</TargetFramework>
+		<PackageName>RunnerTray</PackageName>
+		<ProjectGuid>{c0f050d2-2491-6a81-083f-7884d725eae8}</ProjectGuid>
+		<Platform>x64</Platform>
+		<OutputName>RunnerTray</OutputName>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+	</PropertyGroup>
+	<ItemGroup>
+		<Wix Include="Product.wxs" />
+	</ItemGroup>
+	<ItemGroup>
+		<!-- The main application EXE to install -->
+		<Content Include="..\bin\$(Configuration)\net48\RunnerTray.exe">
+			<Link>RunnerTray.exe</Link>
+			<CopyToOutputDirectory>Always</CopyToOutputDirectory>
+		</Content>
+	</ItemGroup>
+</Project>

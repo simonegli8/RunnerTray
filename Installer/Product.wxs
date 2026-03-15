@@ -1,0 +1,61 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://wixtoolset.org/schemas/v4/wxs">
+	<Package
+		Name="RunnerTray"
+		Language="1033"
+		Version="1.0.0.0"
+		Manufacturer="Estrellas de Esperanza"
+		UpgradeCode="5E7C7F55-4D4C-4A4D-9D5F-1234567890AB"
+		InstallerVersion="500"
+		Compressed="yes">
+
+		<!-- Upgrade handling -->
+		<MajorUpgrade DowngradeErrorMessage="A newer version of RunnerTray is already installed." />
+
+		<!-- Media template -->
+		<MediaTemplate />
+
+		<!-- Directory structure -->
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="LocalAppDataFolder">
+				<Directory Id="INSTALLFOLDER" Name="RunnerTray" />
+			</Directory>
+			<Directory Id="ProgramMenuFolder">
+				<Directory Id="StartupFolder" Name="Startup" />
+			</Directory>
+		</Directory>
+
+		<!-- Features -->
+		<Feature Id="MainFeature" Title="RunnerTray" Level="1">
+			<ComponentRef Id="RunnerTrayComponent" />
+		</Feature>
+
+		<!-- Components -->
+		<DirectoryRef Id="INSTALLFOLDER">
+			<Component Id="RunnerTrayComponent" Guid="8F41D5D2-8E7F-4C2E-A1D2-1234567890AB">
+				<File Id="RunnerTrayExe"
+					  Source="$(var.ProjectDir)..\bin\$(Configuration)\net48\RunnerTray.exe"
+					  KeyPath="no">
+					<!-- Shortcut for Startup -->
+					<Shortcut
+						Id="RunnerTrayStartupShortcut"
+						Name="RunnerTray"
+						Description="Starts RunnerTray at logon"
+						Directory="StartupFolder"
+						WorkingDirectory="INSTALLFOLDER" />
+				</File>
+				<RegistryValue
+					Root="HKCU"
+					Key="Software\RunnerTray"
+					Name="Installed"
+					Type="integer"
+					Value="1"
+					KeyPath="yes" />
+
+				<!-- Remove the INSTALLFOLDER on uninstall -->
+				<RemoveFolder Id="RemoveInstallFolder" On="uninstall" />
+			</Component>
+		</DirectoryRef>
+
+	</Package>
+</Wix>
