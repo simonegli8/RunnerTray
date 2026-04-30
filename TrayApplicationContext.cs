@@ -1,6 +1,7 @@
 using System;
 using System.Diagnostics;
 using System.Drawing;
+using System.Security.Principal;
 using System.Windows.Forms;
 
 namespace RunnerTray
@@ -47,6 +48,13 @@ namespace RunnerTray
         }
 
         private bool IsRunning => _process != null && !_process.HasExited;
+        public static bool IsRunningAsAdmin()
+        {
+            var identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
+        }
 
         private void StartCommand()
         {
@@ -59,18 +67,20 @@ namespace RunnerTray
 
             var command = AppSettings.Current.Command;
             var runAsAdmin = AppSettings.Current.RunAsAdmin;
+            var isRunningAsAdmin = IsRunningAsAdmin();
             try
             {
                 var psi = new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
                     Arguments = "/C " + command,
-                    UseShellExecute = true,
+                    UseShellExecute = isRunningAsAdmin,
                     RedirectStandardOutput = false,
                     RedirectStandardError = false,
-                    CreateNoWindow = true
+                    CreateNoWindow = true,
+                    WindowStyle = ProcessWindowStyle.Hidden
                 };
-                if (runAsAdmin)
+                if (runAsAdmin && isRunningAsAdmin)
                 {
                     psi.Verb = "runas";
                 }
