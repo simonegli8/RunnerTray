@@ -80,7 +80,7 @@ namespace RunnerTray
                     CreateNoWindow = true,
                     WindowStyle = ProcessWindowStyle.Hidden
                 };
-                if (runAsAdmin && isRunningAsAdmin)
+                if (runAsAdmin && !isRunningAsAdmin)
                 {
                     psi.Verb = "runas";
                 }
