@@ -12,12 +12,15 @@ namespace RunnerTray
 
         private void SettingsForm_Load(object sender, EventArgs e)
         {
-            txtCommand.Text = AppSettings.LoadCommand();
+            txtCommand.Text = AppSettings.Current.Command;
+            chkRunAsAdmin.Checked = AppSettings.Current.RunAsAdmin;
         }
 
         private void btnOk_Click(object sender, EventArgs e)
         {
-            AppSettings.SaveCommand(txtCommand.Text);
+            AppSettings.Current.Command = txtCommand.Text;
+            AppSettings.Current.RunAsAdmin = chkRunAsAdmin.Checked;
+            AppSettings.Current.Save();
             DialogResult = DialogResult.OK;
             Close();
         }

@@ -1,13 +1,16 @@
 <Project Sdk="Microsoft.NET.Sdk.WindowsDesktop">
-  <PropertyGroup>
-    <OutputType>WinExe</OutputType>
-    <TargetFramework>net48</TargetFramework>
-    <UseWindowsForms>true</UseWindowsForms>
-    <RootNamespace>RunnerTray</RootNamespace>
-    <AssemblyName>RunnerTray</AssemblyName>
-    <ApplicationIcon>github-play.ico</ApplicationIcon>
-  </PropertyGroup>
-  <ItemGroup>
-    <None Include="github-play.ico" />
-  </ItemGroup>
+	<PropertyGroup>
+		<OutputType>WinExe</OutputType>
+		<TargetFramework>net48</TargetFramework>
+		<UseWindowsForms>true</UseWindowsForms>
+		<RootNamespace>RunnerTray</RootNamespace>
+		<AssemblyName>RunnerTray</AssemblyName>
+		<ApplicationIcon>github-play.ico</ApplicationIcon>
+	</PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Newtonsoft.Json" Version="13.0.4" />
+	</ItemGroup>
+	<ItemGroup>
+		<None Include="github-play.ico" />
+	</ItemGroup>
 </Project>

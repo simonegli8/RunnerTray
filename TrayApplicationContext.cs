@@ -57,19 +57,24 @@ namespace RunnerTray
                 return;
             }
 
-            var command = AppSettings.LoadCommand();
+            var command = AppSettings.Current.Command;
+            var runAsAdmin = AppSettings.Current.RunAsAdmin;
             try
             {
                 var psi = new ProcessStartInfo
                 {
                     FileName = "cmd.exe",
                     Arguments = "/C " + command,
-                    UseShellExecute = false,
+                    UseShellExecute = true,
                     RedirectStandardOutput = false,
                     RedirectStandardError = false,
                     CreateNoWindow = true
                 };
-
+                if (runAsAdmin)
+                {
+                    psi.Verb = "runas";
+                }
+                
                 _process = new Process { StartInfo = psi, EnableRaisingEvents = true };
                 _process.Exited += (s, e) =>
                 {

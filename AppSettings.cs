@@ -1,37 +1,45 @@
 using System;
 using System.IO;
+using Newtonsoft.Json;
 
 namespace RunnerTray
 {
-    internal static class AppSettings
+    public class AppSettings
     {
         private const string FileName = "RunnerTray.config";
         private const string DefaultCommand = @"C:\Runner\run.cmd";
 
-        public static string LoadCommand()
+        public string Command { get; set; } = DefaultCommand;
+        public bool RunAsAdmin { get; set; } = false;
+
+        public static AppSettings Current { get; private set; } = new AppSettings().Load();
+
+        public AppSettings Load()
         {
             try
             {
                 var path = GetConfigPath();
                 if (File.Exists(path))
                 {
-                    return File.ReadAllText(path);
+                    var json = File.ReadAllText(path);
+                    var settings = JsonConvert.DeserializeObject<AppSettings>(json);
+                    Command = settings.Command;
+                    RunAsAdmin = settings.RunAsAdmin;
                 }
             }
             catch
             {
                 // ignore and fall back to default
             }
-
-            return DefaultCommand;
+            return this;
         }
 
-        public static void SaveCommand(string command)
+        public void Save()
         {
             try
             {
                 var path = GetConfigPath();
-                File.WriteAllText(path, command ?? string.Empty);
+                File.WriteAllText(path, JsonConvert.SerializeObject(this));
             }
             catch
             {
